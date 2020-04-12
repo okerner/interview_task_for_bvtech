@@ -4,7 +4,10 @@ source "https://rubygems.org"
 
 git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
-gem "rails"
-gem "sinatra"
-gem "thin"
+gem 'rails'
+gem 'sinatra'
+gem 'thin'
 gem 'sinatra-contrib'
+gem 'rack-cors', :require => 'rack/cors'
+gem 'json'
+gem 'sinatra-cross_origin'
