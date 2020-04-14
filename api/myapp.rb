@@ -4,53 +4,15 @@ require 'sinatra/base'
 require 'sinatra/namespace'
 require 'sinatra/config_file'
 require 'sinatra/cross_origin'
-require 'net/https'
-require 'uri'
+require_relative './utils/get_json'
+require_relative './utils/helpers'
 require 'pp'
 require 'json'
 
-def get_inplay_json(url)
-    pp "url: ", url
-    uri = URI.parse(url)
-
-
-    http = Net::HTTP.new(uri.host, uri.port)
-    if uri.scheme == "https"
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    end
-
-    # This request uses proxy.
-    request = Net::HTTP::Get.new(uri.request_uri)
-    response = http.request(request)
-    
-    pp "response:", response
-    case response
-    when Net::HTTPSuccess then
-        JSON.parse(response.body)
-    else
-        "No content"
-    end
-end
-
-def get_json_file_content(data_file_path)
-    data = File.read(data_file_path)
-    JSON.parse(data)
-end
-
 def get_data(settings)
-    if settings.use_data_file
-        json_array = get_json_file_content(settings.data_file_path)
-    elsif settings.use_proxy
-        json_array = get_inplay_json(settings.url_with_proxy)
-    else
-        json_array = get_inplay_json(settings.url)
-    end
-    new_hash = {}
-    json_array['sports'].each do |sport|
-        new_hash[sport['id']] = sport
-    end
-    new_hash
+    json_array = GetJson.get_inplay_json(settings.url, settings.use_proxy, settings.proxy_address, settings.proxy_port)
+    
+    Helpers.create_hash_from_json(json_array)
 end
 
 class MyApp < Sinatra::Base
@@ -81,7 +43,12 @@ class MyApp < Sinatra::Base
             json_data = get_data(settings)
             pp params['sport_id']
             pp json_data
-            JSON.dump(json_data[params['sport_id'].to_i])
+            JSON.dump({'sport': json_data[params['sport_id'].to_i], 'events': json_data[params['sport_id'].to_i]['events']})
+        end
+
+        get '/sports/:sport_id/events/:event_id' do
+            json_data = get_data(settings)
+
         end
     end
     run!

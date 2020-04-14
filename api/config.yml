@@ -1,5 +1,4 @@
-use_data_file: True
-data_file_path: "../data/inplay.json"
 url: "https://m.betvictor.com/bv_in_play/v2/en-gb/1/mini_inplay.json"
-use_proxy: False
-url_with_proxy: "https://eu2.free-proxy.com/browse.php?u=GyNXOiixXOfCfDy3IksqHyS7mDoVK%2FZq6IwAB%2Fs%2B0JVbyirlXhyARSGeE%2BDYvk8735GSajMxn61lxTls&b=1"
+use_proxy: True
+proxy_address: "88.80.188.112"
+proxy_port: "31028"
