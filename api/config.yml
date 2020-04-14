@@ -2,3 +2,6 @@ url: "https://m.betvictor.com/bv_in_play/v2/en-gb/1/mini_inplay.json"
 use_proxy: True
 proxy_address: "88.80.188.112"
 proxy_port: "31028"
+use_redis_for_cache: True
+redis_url_or_ip: "127.0.0.1"
+redis_port: "6379"
