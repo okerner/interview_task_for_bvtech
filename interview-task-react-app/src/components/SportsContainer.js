@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { apiConfig } from '../config/config'
+import { usePromiseTracker } from 'react-promise-tracker';
+import { trackPromise } from 'react-promise-tracker';
+import Loader from 'react-loader-spinner';
 
 const client = axios.create({
     baseURL: apiConfig.baseUrl,
@@ -9,22 +12,44 @@ const client = axios.create({
     }
 });
 
+const LoadingIndicator = props => {
+    const { promiseInProgress } = usePromiseTracker();
+    
+    return (
+         promiseInProgress && 
+        <div
+            style={{
+                width: "100%",
+                height: "100",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+            }}
+        >
+            <Loader type="ThreeDots" color="#2BAD60" height="100" width="100" />
+        </div>
+    );  
+}
+
 class SportsContainer extends Component {
     constructor(props) {
         super(props)
         this.state = {
-          sports: []
+          sports: [],
+          loading: true,
         }
     }
     getSports() {
-        client.get('/sports')
-        .then(response => {
-            response.data.forEach(sport => {
-                sport.isToggleOn = false
-            });
-            this.setState({sports: response.data})
-        })
-        .catch(error => console.log(error))
+        trackPromise(
+            client.get('/sports')
+            .then(response => {
+                response.data.forEach(sport => {
+                    sport.isToggleOn = false
+                });
+                this.setState({sports: response.data, loading: false})
+            })
+            .catch(error => console.log(error))
+        )
     }
 
     searchSportById(e) {
@@ -79,6 +104,7 @@ class SportsContainer extends Component {
             placeholder="Please write here a sport's ID and press ENTER for searching a sport by ID" maxLength="50" onKeyDown={this.searchSportById.bind(this)}/>
         </div>  	    
         <div className="listWrapper">
+        <LoadingIndicator/>
         <ul className="sportList">
             {this.state.sports.map((sport) => {
                 return( 

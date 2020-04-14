@@ -48,7 +48,8 @@ class MyApp < Sinatra::Base
 
         get '/sports/:sport_id/events/:event_id' do
             json_data = get_data(settings)
-
+            pp 'Sport id:', params['sport_id']
+            pp 'Event id:', params['event_id']
         end
     end
     run!

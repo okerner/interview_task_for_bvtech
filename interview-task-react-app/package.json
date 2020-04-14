@@ -8,6 +8,8 @@
     "cors": "^2.8.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-loader-spinner": "^3.1.14",
+    "react-promise-tracker": "^2.1.0",
     "react-scripts": "0.9.5"
   },
   "devDependencies": {},
